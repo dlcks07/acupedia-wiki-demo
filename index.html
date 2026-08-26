@@ -334,6 +334,59 @@
         border-radius: 5px;
       }
 
+      /* 미리보기용 목차 스타일 */
+      .preview-content .acupedia-toc {
+        display: inline-block;
+        min-width: 260px;
+        max-width: 420px;
+        margin: 18px 0 28px;
+        border: 1px solid #c8ccd1;
+        background: #ffffff;
+        font-size: 14px;
+      }
+
+      .preview-content .acupedia-toc-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 11px 14px;
+        font-weight: 700;
+        border-bottom: 1px solid #e2e4e7;
+        background: #fafafa;
+      }
+
+      .preview-content .acupedia-toc-toggle {
+        font-size: 12px;
+        font-weight: 500;
+        color: #555;
+        cursor: pointer;
+      }
+
+      .preview-content .acupedia-toc-list {
+        padding: 10px 14px 12px;
+      }
+
+      .preview-content .toc-item {
+        line-height: 1.8;
+      }
+
+      .preview-content .toc-level-1 {
+        padding-left: 0;
+      }
+
+      .preview-content .toc-level-2 {
+        padding-left: 20px;
+      }
+
+      .preview-content .acupedia-toc a {
+        color: #1769aa;
+        text-decoration: none;
+      }
+
+      .preview-content .acupedia-toc a:hover {
+        text-decoration: underline;
+      }
+
       @media (max-width: 700px) {
         .form-grid {
           grid-template-columns: 1fr;
@@ -878,7 +931,7 @@
 
       ${guide(`
         해당 질환이 무엇인지 처음 접하는 독자도 이해할 수 있도록
-        핵심 정의, 임상적 중요성, 침구학에서의 위치를
+        핵심 정의, 임상적 중요성, 한의학에서의 위치를
         2~4문장으로 설명합니다.
         "본 보고서에서는", "알아보고자 한다" 등의
         보고서식 표현은 사용하지 않습니다.
@@ -890,14 +943,14 @@
       <h3>2.1 명칭</h3>
 
       ${guide(`
-        한의학·침구학에서의 병명, 이명, 한자명, 영어명 및
+        한의학에서의 병명, 이명, 한자명, 영어명 및
         현대 의학에서의 대응 병명(해당되는 경우)을 정리합니다.
       `)}
 
       <h3>2.2 정의</h3>
 
       ${guide(`
-        전통 문헌과 현대 침구학에서의 정의를 구분하여 기술하고,
+        전통 문헌과 현대 의학에서의 정의를 구분하여 기술하고,
         유사 질환·병증과의 차이를 명확히 합니다.
       `)}
 
@@ -922,7 +975,7 @@
       <h2>4. 병인과 병기</h2>
 
       ${guide(`
-        전통 침구·한의학 관점의 병인(病因)과 병기(病機)를
+        전통 한의학 관점의 병인(病因)과 병기(病機)를
         설명합니다. 필요시 외인·내인·불내인 등으로 구분합니다.
       `)}
 
@@ -962,34 +1015,27 @@
       `)}
 
 
-      <h2>9. 침구 치료</h2>
+      <h2>9. 한의학 치료</h2>
 
       <h3>9.1 치료 원칙</h3>
 
       ${guide(`
-        해당 질환의 침구 치료에서 중시되는 치법·치칙을
+        해당 질환의 한의학 치료에서 중시되는 치법·치칙을
         변증과 연결하여 설명합니다.
       `)}
 
-      <h3>9.2 주요 경혈과 배혈</h3>
+      <h3>9.2 주요 치료 방법</h3>
 
       ${guide(`
-        상용 경혈, 배혈 조합, 경락 선택 근거를 정리합니다.
-        비교가 필요한 경우 표를 적극적으로 사용합니다.
-      `)}
-
-      <h3>9.3 시술 방법</h3>
-
-      ${guide(`
-        자침 깊이, 수기법, 유침 시간, 뜸·부항·전침 등
+        침과 한약을 구분하여 치료 방법과 근거를 정리합니다.
+        비교가 필요한 경우 표를 적극적으로 사용합니다. 또한 자침 깊이, 수기법, 유침 시간, 뜸·부항·전침 등
         병용 시술과 주의사항을 기술합니다.
       `)}
-
 
       <h2>10. 기타 치료와의 관계</h2>
 
       ${guide(`
-        한약, 추나, 물리치료, 생활지도 등 침구 외 치료와의
+        침, 한약, 양약, 추나, 물리치료, 생활지도 등 한의학과 기타 치료와의
         관계나 병용 시 유의점을 필요한 범위에서 설명합니다.
       `)}
 
@@ -1014,8 +1060,7 @@
       <h2>13. 관련 문서</h2>
 
       ${guide(`
-        Acupedia 내에서 함께 읽을 가치가 있는 관련 위키
-        (관련 경혈, 경맥, 배혈, 유사 질환 등)를 연결합니다.
+        Acupedia 내에서 함께 읽을 가치가 있는 관련 위키나 학술자료고 문서, 혹은 기타 외부 문서를 연결합니다.
       `)}
 
 
@@ -1289,6 +1334,7 @@
           'undo redo | blocks | bold italic underline | ' +
           'alignleft aligncenter alignright | ' +
           'bullist numlist | table link | ' +
+          'generateToc | ' +
           'searchreplace | fullscreen code',
 
         menubar: 'file edit view insert format tools table help',
@@ -1351,14 +1397,184 @@
         padding: 11px 14px;
         border-radius: 4px;
       }
+
+      .acupedia-toc {
+        display: inline-block;
+        min-width: 260px;
+        max-width: 420px;
+        margin: 18px 0 28px;
+        border: 1px solid #c8ccd1;
+        background: #ffffff;
+        font-size: 14px;
+      }
+
+      .acupedia-toc-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 11px 14px;
+        font-weight: 700;
+        border-bottom: 1px solid #e2e4e7;
+        background: #fafafa;
+      }
+
+      .acupedia-toc-toggle {
+        font-size: 12px;
+        font-weight: 500;
+        color: #555;
+        cursor: pointer;
+      }
+
+      .acupedia-toc-list {
+        padding: 10px 14px 12px;
+      }
+
+      .toc-item {
+        line-height: 1.8;
+      }
+
+      .toc-level-1 {
+        padding-left: 0;
+      }
+
+      .toc-level-2 {
+        padding-left: 20px;
+      }
+
+      .acupedia-toc a {
+        color: #1769aa;
+        text-decoration: none;
+      }
+
+      .acupedia-toc a:hover {
+        text-decoration: underline;
+      }
     `,
 
         setup: function (editor) {
+          editor.ui.registry.addButton('generateToc', {
+            text: '목차 생성/갱신',
+
+            onAction: function () {
+              generateTableOfContents(editor);
+            },
+          });
+
           editor.on('init', function () {
             editor.setContent(templates.acupointTheory);
+            generateTableOfContents(editor);
           });
         },
       });
+
+      /* =====================================================
+     목차 자동 생성
+  ===================================================== */
+
+      function generateTableOfContents(editor) {
+        const body = editor.getBody();
+
+        /* 기존 목차가 있으면 제거 */
+        const oldToc = body.querySelector('.acupedia-toc');
+
+        if (oldToc) {
+          oldToc.remove();
+        }
+
+        /*
+          문서 내 H2, H3를 목차 대상으로 사용
+          H1은 문서 제목이므로 제외
+        */
+        const headings = Array.from(body.querySelectorAll('h2, h3'));
+
+        if (headings.length === 0) {
+          editor.notificationManager.open({
+            text: '목차로 만들 제목이 없습니다.',
+            type: 'info',
+          });
+
+          return;
+        }
+
+        /* 각 제목에 고유 id 부여 */
+        headings.forEach((heading, index) => {
+          if (!heading.id) {
+            heading.id = 'wiki-section-' + (index + 1);
+          }
+        });
+
+        /* 목차 영역 생성 */
+        const toc = document.createElement('div');
+
+        toc.className = 'acupedia-toc';
+        toc.setAttribute('contenteditable', 'false');
+
+        const tocHeader = document.createElement('div');
+
+        tocHeader.className = 'acupedia-toc-header';
+
+        tocHeader.innerHTML = `
+          <span>목차</span>
+          <span class="acupedia-toc-toggle">접기</span>
+        `;
+
+        toc.appendChild(tocHeader);
+
+        const tocList = document.createElement('div');
+
+        tocList.className = 'acupedia-toc-list';
+
+        headings.forEach((heading) => {
+          const item = document.createElement('div');
+
+          const level =
+            heading.tagName.toLowerCase() === 'h3'
+              ? 'toc-level-2'
+              : 'toc-level-1';
+
+          item.className = 'toc-item ' + level;
+
+          const link = document.createElement('a');
+
+          link.href = '#' + heading.id;
+          link.textContent = heading.textContent;
+
+          /*
+            TinyMCE 편집 화면에서도
+            클릭 시 바로 이동하도록 처리
+          */
+          link.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            const target = editor.getBody().querySelector('#' + heading.id);
+
+            if (target) {
+              target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+              });
+            }
+          });
+
+          item.appendChild(link);
+          tocList.appendChild(item);
+        });
+
+        toc.appendChild(tocList);
+
+        /* 첫 번째 H2/H3 앞에 삽입 */
+        headings[0].parentNode.insertBefore(toc, headings[0]);
+
+        /* 접기/펼치기 */
+        const toggle = toc.querySelector('.acupedia-toc-toggle');
+
+        toggle.addEventListener('click', function () {
+          const isHidden = tocList.style.display === 'none';
+
+          tocList.style.display = isHidden ? 'block' : 'none';
+          toggle.textContent = isHidden ? '접기' : '펼치기';
+        });
+      }
 
       /* =====================================================
      설명 업데이트
@@ -1405,6 +1621,7 @@
         }
 
         tinymce.get('editor').setContent(templates[type]);
+        generateTableOfContents(tinymce.get('editor'));
       }
 
       /* =====================================================
@@ -1423,6 +1640,7 @@
         updateDescription();
 
         tinymce.get('editor').setContent(exampleContent);
+        generateTableOfContents(tinymce.get('editor'));
       }
 
       /* =====================================================
@@ -1457,6 +1675,43 @@
     `;
 
         document.getElementById('previewOverlay').style.display = 'block';
+
+        setupPreviewLinks();
+      }
+
+      function setupPreviewLinks() {
+        const preview = document.getElementById('previewContent');
+
+        const links = preview.querySelectorAll('.acupedia-toc a[href^="#"]');
+
+        links.forEach((link) => {
+          link.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            const id = link.getAttribute('href').substring(1);
+
+            const target = preview.querySelector('#' + CSS.escape(id));
+
+            if (target) {
+              target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+              });
+            }
+          });
+        });
+
+        const toggle = preview.querySelector('.acupedia-toc-toggle');
+        const tocList = preview.querySelector('.acupedia-toc-list');
+
+        if (toggle && tocList) {
+          toggle.addEventListener('click', function () {
+            const isHidden = tocList.style.display === 'none';
+
+            tocList.style.display = isHidden ? 'block' : 'none';
+            toggle.textContent = isHidden ? '접기' : '펼치기';
+          });
+        }
       }
 
       function closePreview() {
