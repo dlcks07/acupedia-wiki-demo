@@ -1,0 +1,1257 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acupedia — 문단 편집 · 위키링크 데모</title>
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@7/tinymce.min.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #f3f5f7;
+        color: #252a31;
+        font-family:
+          Pretendard,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          'Noto Sans KR',
+          Arial,
+          sans-serif;
+      }
+
+      .top-header {
+        background: white;
+        border-bottom: 1px solid #e5e8ec;
+      }
+
+      .top-header-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 18px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-logo {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        background: #276749;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .brand-title {
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .brand-subtitle {
+        margin-top: 2px;
+        font-size: 13px;
+        color: #7b8490;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .demo-badge {
+        padding: 7px 12px;
+        background: #edf7f2;
+        color: #276749;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .nav-link {
+        display: inline-flex;
+        align-items: center;
+        height: 36px;
+        padding: 0 14px;
+        border: 1px solid #cfd6dd;
+        border-radius: 7px;
+        background: white;
+        color: #374151;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .nav-link:hover {
+        background: #f7f8fa;
+      }
+
+      .container {
+        max-width: 1280px;
+        margin: 24px auto 70px;
+        padding: 0 24px;
+      }
+
+      .page-heading h1 {
+        margin: 0 0 8px;
+        font-size: 26px;
+        letter-spacing: -0.4px;
+      }
+
+      .page-heading p {
+        margin: 0;
+        color: #68727e;
+        line-height: 1.7;
+        font-size: 14px;
+      }
+
+      .concept-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin: 20px 0 22px;
+      }
+
+      .concept-card {
+        background: white;
+        border: 1px solid #e2e6ea;
+        border-radius: 10px;
+        padding: 14px 16px;
+      }
+
+      .concept-card strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 13px;
+        color: #276749;
+      }
+
+      .concept-card span {
+        font-size: 13px;
+        color: #5d6873;
+        line-height: 1.55;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .side-panel,
+      .article-panel,
+      .hint-panel {
+        background: white;
+        border: 1px solid #e2e6ea;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      }
+
+      .side-panel {
+        position: sticky;
+        top: 18px;
+        padding: 16px;
+      }
+
+      .side-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #4b5563;
+        margin-bottom: 10px;
+      }
+
+      .toc-box {
+        border: 1px solid #c8ccd1;
+        border-radius: 6px;
+        overflow: hidden;
+        font-size: 13px;
+      }
+
+      .toc-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 12px;
+        background: #fafafa;
+        border-bottom: 1px solid #e2e4e7;
+        font-weight: 700;
+      }
+
+      .toc-toggle {
+        font-size: 12px;
+        font-weight: 500;
+        color: #555;
+        cursor: pointer;
+      }
+
+      .toc-list {
+        padding: 8px 12px 10px;
+      }
+
+      .toc-item {
+        line-height: 1.75;
+      }
+
+      .toc-level-2 {
+        padding-left: 16px;
+      }
+
+      .toc-item a {
+        color: #1769aa;
+        text-decoration: none;
+      }
+
+      .toc-item a:hover {
+        text-decoration: underline;
+      }
+
+      .flow-note {
+        margin-top: 14px;
+        padding: 12px;
+        background: #f7fbf9;
+        border-left: 3px solid #40916c;
+        color: #5d6873;
+        font-size: 12px;
+        line-height: 1.65;
+      }
+
+      .article-panel {
+        padding: 28px 34px 40px;
+      }
+
+      .article-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+
+      .article-title {
+        margin: 0;
+        font-size: 32px;
+        letter-spacing: -0.6px;
+      }
+
+      .article-type {
+        flex-shrink: 0;
+        margin-top: 8px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #eef2ff;
+        color: #3730a3;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .article-lead {
+        margin: 0 0 22px;
+        color: #68727e;
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .wiki-body h2,
+      .wiki-body h3 {
+        scroll-margin-top: 24px;
+      }
+
+      .section-block {
+        margin-top: 28px;
+      }
+
+      .section-heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0;
+        padding-bottom: 7px;
+        border-bottom: 1px solid #dadde0;
+      }
+
+      .section-heading.h2 {
+        font-size: 22px;
+        margin-top: 8px;
+      }
+
+      .section-heading.h3 {
+        font-size: 18px;
+        margin-top: 4px;
+        border-bottom-style: dashed;
+      }
+
+      .section-heading .num {
+        color: #276749;
+        font-weight: 700;
+      }
+
+      .section-heading .label {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .btn-edit-section {
+        height: 28px;
+        padding: 0 10px;
+        border: 1px solid #cfd6dd;
+        border-radius: 6px;
+        background: white;
+        color: #374151;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .btn-edit-section:hover {
+        background: #edf7f2;
+        border-color: #b8ddcb;
+        color: #276749;
+      }
+
+      .section-content {
+        margin-top: 12px;
+        font-size: 15px;
+        line-height: 1.85;
+        color: #282d32;
+      }
+
+      .section-content p {
+        margin: 0 0 12px;
+      }
+
+      .section-content ul {
+        margin: 0 0 12px;
+        padding-left: 22px;
+      }
+
+      a.wiki-link {
+        color: #1769aa;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(23, 105, 170, 0.35);
+      }
+
+      a.wiki-link:hover {
+        text-decoration: underline;
+      }
+
+      a.wiki-link[data-source='archive'] {
+        color: #9a3412;
+        border-bottom-color: rgba(154, 52, 18, 0.35);
+      }
+
+      .hint-panel {
+        margin-top: 18px;
+        padding: 16px 18px;
+      }
+
+      .hint-panel h3 {
+        margin: 0 0 8px;
+        font-size: 14px;
+      }
+
+      .hint-panel p,
+      .hint-panel li {
+        margin: 0;
+        color: #5d6873;
+        font-size: 13px;
+        line-height: 1.65;
+      }
+
+      .hint-panel ul {
+        margin: 8px 0 0;
+        padding-left: 18px;
+      }
+
+      .hint-panel code {
+        padding: 1px 5px;
+        border-radius: 4px;
+        background: #f1f5f9;
+        font-size: 12px;
+      }
+
+      /* 문단 편집 모달 */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: rgba(20, 25, 30, 0.55);
+        padding: 28px 16px;
+        overflow-y: auto;
+      }
+
+      .modal-overlay.open {
+        display: block;
+      }
+
+      .modal {
+        width: min(920px, 100%);
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      }
+
+      .modal-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid #e3e6e9;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .modal-header strong {
+        font-size: 16px;
+      }
+
+      .modal-subtitle {
+        margin-top: 3px;
+        font-size: 12px;
+        color: #7b8490;
+        font-weight: 500;
+      }
+
+      .modal-close {
+        border: none;
+        background: transparent;
+        font-size: 24px;
+        line-height: 1;
+        cursor: pointer;
+        color: #6b7280;
+      }
+
+      .modal-body {
+        padding: 16px 20px 8px;
+      }
+
+      .edit-tip {
+        margin-bottom: 12px;
+        padding: 10px 12px;
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        border-radius: 8px;
+        color: #92400e;
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .modal-footer {
+        padding: 14px 20px 18px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      button {
+        height: 38px;
+        padding: 0 14px;
+        border-radius: 7px;
+        border: 1px solid #cfd6dd;
+        background: white;
+        color: #374151;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #f7f8fa;
+      }
+
+      .btn-primary {
+        color: white;
+        border-color: #33775b;
+        background: #33775b;
+      }
+
+      .btn-primary:hover {
+        background: #276749;
+      }
+
+      /* TinyMCE autocompleter 스타일 보완은 에디터 내부 */
+      .tox .tox-collection__item-label .ac-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .source-badge {
+        display: inline-block;
+        padding: 1px 7px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .source-badge.wiki {
+        background: #e8f5ee;
+        color: #276749;
+      }
+
+      .source-badge.archive {
+        background: #ffedd5;
+        color: #9a3412;
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .side-panel {
+          position: static;
+        }
+
+        .concept-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .article-panel {
+          padding: 22px 18px 32px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="top-header">
+      <div class="top-header-inner">
+        <div class="brand">
+          <div class="brand-logo">A</div>
+          <div>
+            <div class="brand-title">Acupedia</div>
+            <div class="brand-subtitle">문단 편집 · 위키링크 Prototype</div>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <a class="nav-link" href="./index.html">표준 양식 데모로</a>
+          <div class="demo-badge">DEMO</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="page-heading">
+        <h1>문단 편집 · [[위키링크]] 데모</h1>
+        <p>
+          작성자가 H2/H3 제목만 넣으면 시스템이 문단·목차·편집 버튼을 자동
+          생성합니다. 아래는 교수님께 흐름을 보여드리기 위한 테스트 화면입니다.
+        </p>
+      </div>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <strong>1. 문단 자동 인식</strong>
+          <span
+            >제목 스타일(H2/H3) → 번호·목차·앵커·문단별 [편집]이 한 구조로
+            생성됩니다.</span
+          >
+        </div>
+        <div class="concept-card">
+          <strong>2. 문단만 편집</strong>
+          <span
+            >[편집]을 누르면 해당 문단만 TinyMCE로 열어 수정하고 저장합니다.</span
+          >
+        </div>
+        <div class="concept-card">
+          <strong>3. [[ ]] 내부 링크</strong>
+          <span
+            >편집 중 <code>[[</code> 입력 시 위키 / 학술자료고를 구분해
+            자동완성합니다.</span
+          >
+        </div>
+      </div>
+
+      <div class="layout">
+        <aside class="side-panel">
+          <div class="side-title">자동 생성 목차</div>
+          <div class="toc-box">
+            <div class="toc-header">
+              <span>목차</span>
+              <span class="toc-toggle" id="tocToggle">접기</span>
+            </div>
+            <div class="toc-list" id="tocList"></div>
+          </div>
+
+          <div class="flow-note">
+            문단 번호는 사용자가 직접 치지 않습니다.<br />
+            H2/H3만 있으면 화면에서<br />
+            <strong>1. 개요 → 2. 병인 → 2.1 …</strong>으로 계산합니다.
+          </div>
+        </aside>
+
+        <section class="article-panel">
+          <div class="article-meta">
+            <h1 class="article-title" id="articleTitle">중풍</h1>
+            <div class="article-type">질환형 위키</div>
+          </div>
+          <p class="article-lead">
+            아래 본문은 데모용 샘플입니다. 각 제목 옆
+            <strong>[편집]</strong>을 눌러 해당 문단만 수정해 보세요. 편집창에서
+            <code>[[</code>를 입력하면 위키·학술자료고 자동완성이 나타납니다.
+          </p>
+
+          <div class="wiki-body" id="wikiBody"></div>
+
+          <div class="hint-panel">
+            <h3>데모에서 확인해 보실 점</h3>
+            <ul>
+              <li>
+                왼쪽 목차 클릭 → 해당 문단으로 이동 (나무위키식 앵커)
+              </li>
+              <li>
+                문단 [편집] → 해당 구간만 수정 (전체 문서를 다시 열지 않음)
+              </li>
+              <li>
+                편집기에서
+                <code>[[수</code>, <code>[[중</code>,
+                <code>[[침</code> 입력 → 위키 / 학술자료고 구분 자동완성
+              </li>
+              <li>
+                저장 시
+                <code>[[문서명]]</code>이 아니라
+                <code>data-wiki-id</code> / <code>data-archive-id</code>가 붙은
+                HTML 링크로 저장되는 구조를 가정합니다
+              </li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- 문단 편집 모달 -->
+    <div
+      id="editOverlay"
+      class="modal-overlay"
+      onclick="overlayClick(event)"
+    >
+      <div class="modal">
+        <div class="modal-header">
+          <div>
+            <strong id="editModalTitle">문단 편집</strong>
+            <div class="modal-subtitle" id="editModalSubtitle"></div>
+          </div>
+          <button class="modal-close" type="button" onclick="closeSectionEditor()">
+            ×
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="edit-tip">
+            <strong>위키링크 테스트:</strong>
+            <code>[[</code>를 입력한 뒤 글자를 치면 자동완성이 열립니다. 초록
+            배지 = 위키, 주황 배지 = 학술자료고입니다. 항목을 선택하면 내부
+            링크 HTML이 삽입됩니다.
+          </div>
+          <textarea id="sectionEditor"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" onclick="closeSectionEditor()">취소</button>
+          <button class="btn-primary" type="button" onclick="saveSectionEditor()">
+            이 문단 저장
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* =====================================================
+         데모용 검색 데이터 (실제로는 API 응답)
+         GET /api/wiki/search?q=...
+         GET /api/archive/search?q=...
+      ===================================================== */
+
+      const SEARCH_ITEMS = [
+        {
+          id: 101,
+          title: '중풍',
+          type: 'wiki',
+          subtitle: '질환형 위키',
+        },
+        {
+          id: 152,
+          title: '수궐음심포경',
+          type: 'wiki',
+          subtitle: '경맥형 위키',
+        },
+        {
+          id: 153,
+          title: '수소음심경',
+          type: 'wiki',
+          subtitle: '경맥형 위키',
+        },
+        {
+          id: 154,
+          title: '수태음폐경',
+          type: 'wiki',
+          subtitle: '경맥형 위키',
+        },
+        {
+          id: 155,
+          title: '수태양소장경',
+          type: 'wiki',
+          subtitle: '경맥형 위키',
+        },
+        {
+          id: 156,
+          title: '수양명대장경',
+          type: 'wiki',
+          subtitle: '경맥형 위키',
+        },
+        {
+          id: 210,
+          title: '합곡',
+          type: 'wiki',
+          subtitle: '개별 경혈형 위키',
+        },
+        {
+          id: 211,
+          title: '족삼리',
+          type: 'wiki',
+          subtitle: '개별 경혈형 위키',
+        },
+        {
+          id: 212,
+          title: '백회',
+          type: 'wiki',
+          subtitle: '개별 경혈형 위키',
+        },
+        {
+          id: 301,
+          title: '기경팔맥',
+          type: 'wiki',
+          subtitle: '경락 이론형 위키',
+        },
+        {
+          id: 401,
+          title: '사관혈',
+          type: 'wiki',
+          subtitle: '배혈·처방형 위키',
+        },
+        {
+          id: 901,
+          title: '중풍의 침구치료 체계적 고찰',
+          type: 'archive',
+          subtitle: '학술자료고 · 리뷰',
+        },
+        {
+          id: 902,
+          title: '중풍 후유증에 대한 전침 임상연구',
+          type: 'archive',
+          subtitle: '학술자료고 · 임상연구',
+        },
+        {
+          id: 903,
+          title: '침치료와 뇌졸중 재활의 상관성',
+          type: 'archive',
+          subtitle: '학술자료고 · 논문',
+        },
+        {
+          id: 904,
+          title: '수궐음심포경 유주에 관한 문헌 비교',
+          type: 'archive',
+          subtitle: '학술자료고 · 문헌연구',
+        },
+        {
+          id: 905,
+          title: '합곡·태충 배혈의 임상 적용',
+          type: 'archive',
+          subtitle: '학술자료고 · 임상',
+        },
+      ];
+
+      /* =====================================================
+         데모 문서 데이터 (저장된 HTML을 가정)
+      ===================================================== */
+
+      let article = {
+        title: '중풍',
+        sections: [
+          {
+            id: 'sec-1',
+            level: 2,
+            title: '개요',
+            html: `
+              <p>
+                <strong>중풍(中風)</strong>은 갑자기 의식장애, 반신불수, 언어장애
+                등이 나타나는 병증을 가리킨다. 현대 의학의 뇌졸중과 대응되는
+                개념으로 자주 설명되며, 침구·한의학 임상에서 중요한 치료 대상이다.
+              </p>
+              <p>
+                본 문서는 Acupedia 질환형 위키의 문단 편집·내부 링크 데모를 위해
+                구성된 샘플이다.
+              </p>
+            `,
+          },
+          {
+            id: 'sec-2',
+            level: 2,
+            title: '병인',
+            html: `
+              <p>
+                전통적으로 중풍의 병인은 외감풍과 내상풍으로 나누어 설명되어 왔다.
+                실제 임상에서는 풍·화·담·허 등이 복합적으로 관여하는 경우가 많다.
+              </p>
+            `,
+          },
+          {
+            id: 'sec-2-1',
+            level: 3,
+            title: '외감풍',
+            html: `
+              <p>
+                외감풍은 외부의 풍사가 침입하여 경락의 기혈 순환을 방해하는
+                경우로 설명한다. 초기 문헌에서는 풍이 중풍 발생의 핵심 원인으로
+                강조되었다.
+              </p>
+            `,
+          },
+          {
+            id: 'sec-2-2',
+            level: 3,
+            title: '내상풍',
+            html: `
+              <p>
+                내상풍은 장부 기능 실조, 정서 자극, 노권 등으로 인해 내부에서
+                풍이 동하는 것으로 설명한다. 간양상항, 담화내요 등과 연결하여
+                해석하는 경우가 많다.
+              </p>
+            `,
+          },
+          {
+            id: 'sec-3',
+            level: 2,
+            title: '증상',
+            html: `
+              <p>대표적인 임상 양상은 다음과 같다.</p>
+              <ul>
+                <li>반신불수, 구안와사</li>
+                <li>언어장애, 의식장애</li>
+                <li>두통, 현훈, 감각이상</li>
+              </ul>
+            `,
+          },
+          {
+            id: 'sec-4',
+            level: 2,
+            title: '치료',
+            html: `
+              <p>
+                침구 치료에서는 병기와 병기에 따라
+                <a
+                  class="wiki-link"
+                  href="/wikiDetail/212"
+                  data-source="wiki"
+                  data-wiki-id="212"
+                  >백회</a
+                >,
+                <a
+                  class="wiki-link"
+                  href="/wikiDetail/210"
+                  data-source="wiki"
+                  data-wiki-id="210"
+                  >합곡</a
+                >,
+                <a
+                  class="wiki-link"
+                  href="/wikiDetail/211"
+                  data-source="wiki"
+                  data-wiki-id="211"
+                  >족삼리</a
+                >
+                등이 자주 활용된다. 관련 연구로는
+                <a
+                  class="wiki-link"
+                  href="/archiveDetail/901"
+                  data-source="archive"
+                  data-archive-id="901"
+                  >중풍의 침구치료 체계적 고찰</a
+                >을 참고할 수 있다.
+              </p>
+              <p>
+                편집 데모에서는 여기에
+                <code>[[수궐음심포경]]</code> 또는
+                <code>[[중풍의 침구]]</code>처럼 입력해 링크를 추가해 보세요.
+              </p>
+            `,
+          },
+          {
+            id: 'sec-5',
+            level: 2,
+            title: '예후와 주의사항',
+            html: `
+              <p>
+                급성기에는 양방 응급 처치와의 협진이 중요하며, 후유증기에는
+                재활과 침구 치료를 병행하는 접근이 흔히 사용된다.
+              </p>
+            `,
+          },
+        ],
+      };
+
+      let editingSectionId = null;
+      let sectionEditorReady = false;
+
+      /* =====================================================
+         번호 부여 + 렌더
+      ===================================================== */
+
+      function withNumbers(sections) {
+        let h2 = 0;
+        let h3 = 0;
+
+        return sections.map((section) => {
+          if (section.level === 2) {
+            h2 += 1;
+            h3 = 0;
+            return {
+              ...section,
+              number: String(h2),
+              displayTitle: h2 + '. ' + section.title,
+            };
+          }
+
+          h3 += 1;
+          const major = h2 > 0 ? h2 : 0;
+          const number = major + '.' + h3;
+
+          return {
+            ...section,
+            number,
+            displayTitle: number + ' ' + section.title,
+          };
+        });
+      }
+
+      function renderArticle() {
+        const numbered = withNumbers(article.sections);
+        const body = document.getElementById('wikiBody');
+        const toc = document.getElementById('tocList');
+
+        document.getElementById('articleTitle').textContent = article.title;
+
+        body.innerHTML = numbered
+          .map((section) => {
+            const headingClass =
+              section.level === 2 ? 'section-heading h2' : 'section-heading h3';
+
+            return `
+            <article class="section-block" id="${section.id}" data-section-id="${section.id}">
+              <div class="${headingClass}">
+                <span class="num">${escapeHtml(section.number)}</span>
+                <span class="label">${escapeHtml(section.title)}</span>
+                <button
+                  type="button"
+                  class="btn-edit-section"
+                  onclick="openSectionEditor('${section.id}')"
+                >편집</button>
+              </div>
+              <div class="section-content">
+                ${section.html}
+              </div>
+            </article>
+          `;
+          })
+          .join('');
+
+        toc.innerHTML = numbered
+          .map((section) => {
+            const levelClass =
+              section.level === 3 ? 'toc-item toc-level-2' : 'toc-item toc-level-1';
+
+            return `
+            <div class="${levelClass}">
+              <a href="#${section.id}" data-target="${section.id}">
+                ${escapeHtml(section.displayTitle)}
+              </a>
+            </div>
+          `;
+          })
+          .join('');
+
+        toc.querySelectorAll('a[data-target]').forEach((link) => {
+          link.addEventListener('click', function (event) {
+            event.preventDefault();
+            const target = document.getElementById(link.dataset.target);
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          });
+        });
+
+        body.querySelectorAll('a.wiki-link').forEach((link) => {
+          link.addEventListener('click', function (event) {
+            event.preventDefault();
+            const source = link.dataset.source || 'wiki';
+            const id =
+              link.dataset.wikiId || link.dataset.archiveId || '(없음)';
+            alert(
+              '데모용 내부 링크입니다.\n\n' +
+                '구분: ' +
+                (source === 'archive' ? '학술자료고' : '위키') +
+                '\nID: ' +
+                id +
+                '\n표시 텍스트: ' +
+                link.textContent.trim() +
+                '\n경로: ' +
+                link.getAttribute('href'),
+            );
+          });
+        });
+      }
+
+      /* =====================================================
+         검색 (데모: 로컬 필터 / 실제: API)
+      ===================================================== */
+
+      function searchResources(query) {
+        const q = String(query || '').trim().toLowerCase();
+
+        if (!q) {
+          return [];
+        }
+
+        return SEARCH_ITEMS.filter((item) =>
+          item.title.toLowerCase().includes(q),
+        ).slice(0, 8);
+      }
+
+      function buildLinkHtml(item, displayText) {
+        const text = displayText || item.title;
+
+        if (item.type === 'archive') {
+          return (
+            '<a class="wiki-link" href="/archiveDetail/' +
+            item.id +
+            '" data-source="archive" data-archive-id="' +
+            item.id +
+            '">' +
+            escapeHtml(text) +
+            '</a>'
+          );
+        }
+
+        return (
+          '<a class="wiki-link" href="/wikiDetail/' +
+          item.id +
+          '" data-source="wiki" data-wiki-id="' +
+          item.id +
+          '">' +
+          escapeHtml(text) +
+          '</a>'
+        );
+      }
+
+      /* =====================================================
+         TinyMCE — 문단 편집 + [[ 자동완성
+      ===================================================== */
+
+      function initSectionEditor() {
+        return tinymce.init({
+          selector: '#sectionEditor',
+          height: 360,
+          license_key: 'gpl',
+          menubar: false,
+          branding: false,
+          promotion: false,
+          plugins: 'lists link autolink',
+          toolbar:
+            'undo redo | blocks | bold italic underline | bullist numlist | link unlink | removeformat',
+          block_formats: '본문=p; 소제목(H3)=h3',
+          content_style: `
+            body {
+              font-family: Pretendard, "Noto Sans KR", Arial, sans-serif;
+              font-size: 15px;
+              line-height: 1.8;
+              color: #282d32;
+              padding: 12px 16px;
+            }
+            a.wiki-link {
+              color: #1769aa;
+              text-decoration: none;
+              border-bottom: 1px solid rgba(23,105,170,.35);
+            }
+            a.wiki-link[data-source="archive"] {
+              color: #9a3412;
+              border-bottom-color: rgba(154,52,18,.35);
+            }
+          `,
+          setup: function (editor) {
+            editor.ui.registry.addAutocompleter('acupediaWikiLink', {
+              trigger: '[[',
+              minChars: 0,
+              columns: 1,
+              fetch: function (pattern) {
+                return new Promise(function (resolve) {
+                  const results = searchResources(pattern);
+
+                  const wikiItems = results.filter(function (item) {
+                    return item.type === 'wiki';
+                  });
+                  const archiveItems = results.filter(function (item) {
+                    return item.type === 'archive';
+                  });
+
+                  const mapped = [];
+
+                  wikiItems.forEach(function (item) {
+                    mapped.push({
+                      type: 'autocompleteitem',
+                      value:
+                        item.type + '::' + item.id + '::' + item.title,
+                      text: '[위키] ' + item.title,
+                      meta: item.subtitle,
+                    });
+                  });
+
+                  archiveItems.forEach(function (item) {
+                    mapped.push({
+                      type: 'autocompleteitem',
+                      value:
+                        item.type + '::' + item.id + '::' + item.title,
+                      text: '[학술자료고] ' + item.title,
+                      meta: item.subtitle,
+                    });
+                  });
+
+                  resolve(mapped);
+                });
+              },
+              onAction: function (autocompleteApi, rng, value) {
+                const parts = String(value).split('::');
+                const type = parts[0];
+                const id = parts[1];
+                const title = parts.slice(2).join('::');
+
+                editor.selection.setRng(rng);
+                editor.insertContent(
+                  buildLinkHtml({
+                    id: id,
+                    title: title,
+                    type: type,
+                  }) + '&nbsp;',
+                );
+                autocompleteApi.hide();
+              },
+            });
+
+            editor.on('init', function () {
+              sectionEditorReady = true;
+            });
+          },
+        });
+      }
+
+      function openSectionEditor(sectionId) {
+        const section = article.sections.find((s) => s.id === sectionId);
+
+        if (!section) {
+          return;
+        }
+
+        editingSectionId = sectionId;
+
+        const numbered = withNumbers(article.sections).find(
+          (s) => s.id === sectionId,
+        );
+
+        document.getElementById('editModalTitle').textContent =
+          '문단 편집 — ' + section.title;
+        document.getElementById('editModalSubtitle').textContent =
+          '문서: ' +
+          article.title +
+          ' · ' +
+          (numbered ? numbered.displayTitle : section.title) +
+          ' 만 수정합니다';
+
+        document.getElementById('editOverlay').classList.add('open');
+
+        const applyContent = function () {
+          const ed = tinymce.get('sectionEditor');
+          if (ed) {
+            ed.setContent(section.html || '');
+            ed.focus();
+          }
+        };
+
+        if (sectionEditorReady && tinymce.get('sectionEditor')) {
+          applyContent();
+        } else {
+          initSectionEditor().then(applyContent);
+        }
+      }
+
+      function closeSectionEditor() {
+        document.getElementById('editOverlay').classList.remove('open');
+        editingSectionId = null;
+      }
+
+      function saveSectionEditor() {
+        const ed = tinymce.get('sectionEditor');
+
+        if (!ed || !editingSectionId) {
+          return;
+        }
+
+        const section = article.sections.find((s) => s.id === editingSectionId);
+
+        if (!section) {
+          return;
+        }
+
+        section.html = ed.getContent();
+        closeSectionEditor();
+        renderArticle();
+
+        const target = document.getElementById(section.id);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      function overlayClick(event) {
+        if (event.target.id === 'editOverlay') {
+          closeSectionEditor();
+        }
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      /* 목차 접기 */
+      document.getElementById('tocToggle').addEventListener('click', function () {
+        const list = document.getElementById('tocList');
+        const hidden = list.style.display === 'none';
+        list.style.display = hidden ? 'block' : 'none';
+        this.textContent = hidden ? '접기' : '펼치기';
+      });
+
+      renderArticle();
+    </script>
+  </body>
+</html>

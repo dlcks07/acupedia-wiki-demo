@@ -83,6 +83,31 @@
         font-weight: 600;
       }
 
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .nav-link {
+        display: inline-flex;
+        align-items: center;
+        height: 36px;
+        padding: 0 14px;
+        border: 1px solid #cfd6dd;
+        border-radius: 7px;
+        background: white;
+        color: #374151;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .nav-link:hover {
+        background: #f7f8fa;
+      }
+
       /* 전체 컨테이너 */
       .container {
         max-width: 1280px;
@@ -119,8 +144,9 @@
 
       .form-grid {
         display: grid;
-        grid-template-columns: 2fr 1fr;
+        grid-template-columns: 2fr 1fr auto;
         gap: 18px;
+        align-items: end;
       }
 
       .form-group label {
@@ -129,6 +155,16 @@
         font-size: 13px;
         font-weight: 700;
         color: #4b5563;
+      }
+
+      .form-group-action {
+        display: flex;
+        align-items: flex-end;
+      }
+
+      .form-group-action .btn-primary {
+        height: 42px;
+        white-space: nowrap;
       }
 
       input,
@@ -224,17 +260,29 @@
         border-bottom: 1px solid #e8ebee;
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
+        gap: 16px;
       }
 
       .editor-card-title {
         font-size: 14px;
         font-weight: 700;
+        flex-shrink: 0;
+        padding-top: 2px;
+      }
+
+      .editor-help-group {
+        text-align: right;
       }
 
       .editor-help {
         font-size: 12px;
         color: #8a929c;
+        line-height: 1.6;
+      }
+
+      .editor-help + .editor-help {
+        margin-top: 4px;
       }
 
       /* 하단 */
@@ -415,7 +463,12 @@
           </div>
         </div>
 
-        <div class="demo-badge">DEMO</div>
+        <div class="header-actions">
+          <a class="nav-link" href="./section-edit-demo.html"
+            >문단 편집 · 위키링크 데모</a
+          >
+          <div class="demo-badge">DEMO</div>
+        </div>
       </div>
     </header>
 
@@ -462,20 +515,27 @@
               <option value="disease">질환형</option>
             </select>
           </div>
+
+          <div class="form-group-action">
+            <button class="btn-primary" onclick="loadSelectedTemplate()">
+              표준 양식 불러오기
+            </button>
+          </div>
         </div>
 
         <div id="templateDescription" class="template-description"></div>
 
         <div class="button-area">
-          <button class="btn-primary" onclick="loadSelectedTemplate()">
-            표준 양식 불러오기
-          </button>
-
           <button class="btn-example" onclick="loadExample()">
-            팔맥교회혈 모범예시
+            예시로 작성해본 팔맥교회혈 모범예시
           </button>
 
-          <button class="btn-danger-lite" onclick="clearEditor()">
+          <button
+            class="btn-danger-lite"
+            onclick="clearEditor()"
+            hidden
+            aria-hidden="true"
+          >
             빈 문서
           </button>
         </div>
@@ -486,9 +546,15 @@
         <div class="editor-card-header">
           <div class="editor-card-title">위키 본문</div>
 
-          <div class="editor-help">
-            제목은 번호 없이 작성하세요. 「목차 생성/갱신」 시 번호와 목차가
-            자동으로 붙습니다.
+          <div class="editor-help-group">
+            <div class="editor-help">
+              제목은 번호 없이 작성하세요. 「목차 생성/갱신」 시 번호와 목차가
+              자동으로 붙습니다.
+            </div>
+            <div class="editor-help">
+              미리 설정된 위키 본문의 모든 항목을 채우실 필요는 없으나 최소
+              「개요」 항목은 꼭 작성해주시기 바랍니다.
+            </div>
           </div>
         </div>
 
