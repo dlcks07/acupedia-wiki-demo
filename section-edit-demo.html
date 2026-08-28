@@ -1254,12 +1254,12 @@
         const q = String(query || '').trim().toLowerCase();
 
         if (!q) {
-          return SEARCH_ITEMS.slice(0, 8);
+          return SEARCH_ITEMS.slice();
         }
 
         return SEARCH_ITEMS.filter((item) =>
           item.title.toLowerCase().includes(q),
-        ).slice(0, 8);
+        );
       }
 
       function findResourceByTitle(title) {
