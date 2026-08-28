@@ -559,6 +559,73 @@
         line-height: 1.55;
       }
 
+      /* [[ 위키링크 자동완성 드롭다운 */
+      .wiki-ac-dropdown {
+        display: none;
+        position: fixed;
+        z-index: 100001;
+        min-width: 280px;
+        max-width: 360px;
+        max-height: 260px;
+        overflow-y: auto;
+        background: white;
+        border: 1px solid #cfd6dd;
+        border-radius: 8px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+
+      .wiki-ac-dropdown.open {
+        display: block;
+      }
+
+      .wiki-ac-item {
+        display: block;
+        width: 100%;
+        padding: 10px 12px;
+        border: none;
+        border-bottom: 1px solid #eef0f2;
+        background: white;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .wiki-ac-item:last-child {
+        border-bottom: none;
+      }
+
+      .wiki-ac-item:hover,
+      .wiki-ac-item.active {
+        background: #f7fbf9;
+      }
+
+      .wiki-ac-item-title {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #1f2937;
+      }
+
+      .wiki-ac-item-meta {
+        display: block;
+        margin-top: 2px;
+        font-size: 12px;
+        color: #6b7280;
+      }
+
+      .wiki-ac-item-meta.wiki {
+        color: #276749;
+      }
+
+      .wiki-ac-item-meta.archive {
+        color: #9a3412;
+      }
+
+      .wiki-ac-empty {
+        padding: 12px;
+        font-size: 13px;
+        color: #6b7280;
+      }
+
       .modal-footer {
         padding: 14px 20px 18px;
         display: flex;
@@ -705,12 +772,13 @@
         <ol class="dummy-steps">
           <li>아래 본문에서 원하는 문단 옆 <strong>[편집]</strong>을 누릅니다.</li>
           <li>
-            편집창에 <code>[[</code>를 입력한 뒤 글자를 이어 씁니다. (예:
-            <code>[[합</code>, <code>[[경</code>, <code>[[팔</code>)
+            편집창에 <code>[[</code>를 입력한 뒤 글자를 이어 쓰면 커서 아래에
+            자동완성 목록이 나타납니다. (예: <code>[[합</code>,
+            <code>[[경</code>)
           </li>
           <li>
-            자동완성 목록에서 <code>[위키]</code> 또는
-            <code>[학술자료고]</code>로 구분된 항목을 선택합니다.
+            목록에서 <code>[위키]</code> 또는
+            <code>[학술자료고]</code> 항목을 클릭하거나 Enter로 선택합니다.
           </li>
           <li>
             선택하면 <code>[[문서명]]</code>이 아니라
@@ -840,6 +908,8 @@
         </div>
       </div>
     </div>
+
+    <div id="wikiAcDropdown" class="wiki-ac-dropdown" role="listbox"></div>
 
     <script>
       /* =====================================================
@@ -1032,11 +1102,11 @@
                 >을 참고할 수 있다.
               </p>
               <p>
-                편집 데모에서는 여기에
-                <code>[[경근]]</code> 또는
-                <code>[[팔맥교회혈]]</code>처럼 입력해 링크를 추가해 보세요.
-                같은 이름이 위키·학술자료고에 모두 있을 때는 자동완성에서
-                구분됩니다. (예: <code>[[합</code> → [위키] 합곡 / [학술자료고] 합곡)
+                편집 데모에서는 이 문단을 [편집]한 뒤
+                <code>[[</code>를 입력하고 합·경·팔 등을 이어 써 보세요.
+                자동완성에서 항목을 선택하면 링크로 삽입됩니다.
+                같은 이름이 위키·학술자료고에 모두 있을 때는 목록에서
+                구분됩니다.
               </p>
             `,
           },
@@ -1173,12 +1243,112 @@
         const q = String(query || '').trim().toLowerCase();
 
         if (!q) {
-          return [];
+          return SEARCH_ITEMS.slice(0, 8);
         }
 
         return SEARCH_ITEMS.filter((item) =>
           item.title.toLowerCase().includes(q),
         ).slice(0, 8);
+      }
+
+      function findResourceByTitle(title) {
+        const q = String(title || '').trim().toLowerCase();
+
+        if (!q) {
+          return null;
+        }
+
+        const exact = SEARCH_ITEMS.filter(
+          (item) => item.title.toLowerCase() === q,
+        );
+
+        if (exact.length) {
+          return exact.find((item) => item.type === 'wiki') || exact[0];
+        }
+
+        return (
+          SEARCH_ITEMS.find(
+            (item) =>
+              item.type === 'wiki' && item.title.toLowerCase().includes(q),
+          ) ||
+          SEARCH_ITEMS.find((item) => item.title.toLowerCase().includes(q)) ||
+          null
+        );
+      }
+
+      function convertWikiLinks(html) {
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+
+        function walk(node) {
+          if (node.nodeType === 3) {
+            const text = node.textContent;
+
+            if (!/\[\[/.test(text)) {
+              return;
+            }
+
+            const regex = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
+            const parts = [];
+            let lastIndex = 0;
+            let match;
+
+            while ((match = regex.exec(text)) !== null) {
+              if (match.index > lastIndex) {
+                parts.push(
+                  document.createTextNode(text.slice(lastIndex, match.index)),
+                );
+              }
+
+              const title = match[1].trim();
+              const display = match[2] ? match[2].trim() : null;
+              const item = findResourceByTitle(title);
+
+              if (item) {
+                const holder = document.createElement('span');
+                holder.innerHTML = buildLinkHtml(item, display || item.title);
+                parts.push(holder.firstChild);
+              } else {
+                parts.push(document.createTextNode(match[0]));
+              }
+
+              lastIndex = regex.lastIndex;
+            }
+
+            if (lastIndex < text.length) {
+              parts.push(document.createTextNode(text.slice(lastIndex)));
+            }
+
+            if (parts.length) {
+              const frag = document.createDocumentFragment();
+              parts.forEach((part) => frag.appendChild(part));
+              node.parentNode.replaceChild(frag, node);
+            }
+
+            return;
+          }
+
+          if (node.nodeType !== 1) {
+            return;
+          }
+
+          if (
+            node.tagName === 'A' ||
+            node.tagName === 'CODE' ||
+            node.tagName === 'PRE'
+          ) {
+            return;
+          }
+
+          Array.from(node.childNodes).forEach(walk);
+        }
+
+        walk(temp);
+        return cleanupIncompleteWikiSyntax(temp.innerHTML);
+      }
+
+      function cleanupIncompleteWikiSyntax(html) {
+        return html.replace(/\[\[[^\]]*$/gm, '');
       }
 
       function buildLinkHtml(item, displayText) {
@@ -1208,7 +1378,207 @@
       }
 
       /* =====================================================
-         TinyMCE — 문단 편집 + [[ 자동완성
+         [[ 위키링크 자동완성 (커스텀 드롭다운)
+      ===================================================== */
+
+      let wikiAcContext = null;
+      let wikiAcActiveIndex = 0;
+      const wikiAcDropdown = document.getElementById('wikiAcDropdown');
+
+      function findWikiLinkContext(editor) {
+        const rng = editor.selection.getRng();
+        const node = rng.startContainer;
+
+        if (node.nodeType !== 3) {
+          return null;
+        }
+
+        const text = node.textContent;
+        const offset = rng.startOffset;
+        const beforeCursor = text.slice(0, offset);
+        const match = beforeCursor.match(/\[\[([^\[\]]*)$/);
+
+        if (!match) {
+          return null;
+        }
+
+        return {
+          query: match[1],
+          node: node,
+          startOffset: offset - match[0].length,
+          endOffset: offset,
+        };
+      }
+
+      function hideWikiAutocomplete() {
+        wikiAcContext = null;
+        wikiAcActiveIndex = 0;
+        wikiAcDropdown.classList.remove('open');
+        wikiAcDropdown.innerHTML = '';
+      }
+
+      function positionWikiAutocomplete(editor) {
+        const rect = editor.selection.getBoundingClientRect();
+
+        wikiAcDropdown.style.left = Math.max(12, rect.left) + 'px';
+        wikiAcDropdown.style.top = rect.bottom + 6 + 'px';
+      }
+
+      function renderWikiAutocomplete(editor, items, context) {
+        wikiAcContext = context;
+        wikiAcActiveIndex = 0;
+
+        if (!items.length) {
+          wikiAcDropdown.innerHTML =
+            '<div class="wiki-ac-empty">검색 결과가 없습니다.</div>';
+          positionWikiAutocomplete(editor);
+          wikiAcDropdown.classList.add('open');
+          return;
+        }
+
+        wikiAcDropdown.innerHTML = items
+          .map((item, index) => {
+            const badge = item.type === 'archive' ? '학술자료고' : '위키';
+            const badgeClass = item.type === 'archive' ? 'archive' : 'wiki';
+
+            return `
+              <button
+                type="button"
+                class="wiki-ac-item${index === 0 ? ' active' : ''}"
+                data-index="${index}"
+                data-type="${item.type}"
+                data-id="${item.id}"
+              >
+                <span class="wiki-ac-item-title">${escapeHtml(item.title)}</span>
+                <span class="wiki-ac-item-meta ${badgeClass}">[${badge}] ${escapeHtml(item.subtitle)}</span>
+              </button>
+            `;
+          })
+          .join('');
+
+        wikiAcDropdown.querySelectorAll('.wiki-ac-item').forEach((button) => {
+          button.addEventListener('mousedown', function (event) {
+            event.preventDefault();
+            insertWikiLinkFromButton(editor, button);
+          });
+        });
+
+        positionWikiAutocomplete(editor);
+        wikiAcDropdown.classList.add('open');
+      }
+
+      function insertWikiLinkFromButton(editor, button) {
+        if (!wikiAcContext) {
+          return;
+        }
+
+        const item = SEARCH_ITEMS.find(
+          (entry) =>
+            String(entry.id) === String(button.dataset.id) &&
+            entry.type === button.dataset.type,
+        );
+
+        if (item) {
+          insertWikiLink(editor, wikiAcContext, item);
+        }
+
+        hideWikiAutocomplete();
+      }
+
+      function insertWikiLink(editor, context, item) {
+        const rng = editor.dom.createRng();
+        rng.setStart(context.node, context.startOffset);
+        rng.setEnd(context.node, context.endOffset);
+        editor.selection.setRng(rng);
+        editor.insertContent(buildLinkHtml(item) + '&nbsp;');
+        editor.focus();
+      }
+
+      function updateWikiAutocomplete(editor) {
+        const context = findWikiLinkContext(editor);
+
+        if (!context) {
+          hideWikiAutocomplete();
+          return;
+        }
+
+        const items = searchResources(context.query);
+        renderWikiAutocomplete(editor, items, context);
+      }
+
+      function moveWikiAutocomplete(delta) {
+        const buttons = wikiAcDropdown.querySelectorAll('.wiki-ac-item');
+
+        if (!buttons.length) {
+          return;
+        }
+
+        buttons[wikiAcActiveIndex].classList.remove('active');
+        wikiAcActiveIndex =
+          (wikiAcActiveIndex + delta + buttons.length) % buttons.length;
+        buttons[wikiAcActiveIndex].classList.add('active');
+        buttons[wikiAcActiveIndex].scrollIntoView({ block: 'nearest' });
+      }
+
+      function selectActiveWikiAutocomplete(editor) {
+        const active = wikiAcDropdown.querySelector('.wiki-ac-item.active');
+
+        if (active) {
+          insertWikiLinkFromButton(editor, active);
+        }
+      }
+
+      function setupWikiLinkAutocomplete(editor) {
+        editor.on('keyup', function (event) {
+          if (event.key === 'Escape') {
+            hideWikiAutocomplete();
+            return;
+          }
+
+          if (event.key === 'ArrowDown' && wikiAcDropdown.classList.contains('open')) {
+            event.preventDefault();
+            moveWikiAutocomplete(1);
+            return;
+          }
+
+          if (event.key === 'ArrowUp' && wikiAcDropdown.classList.contains('open')) {
+            event.preventDefault();
+            moveWikiAutocomplete(-1);
+            return;
+          }
+
+          if (event.key === 'Enter' && wikiAcDropdown.classList.contains('open')) {
+            event.preventDefault();
+            selectActiveWikiAutocomplete(editor);
+            return;
+          }
+
+          updateWikiAutocomplete(editor);
+        });
+
+        editor.on('input', function () {
+          updateWikiAutocomplete(editor);
+        });
+
+        editor.on('click', function () {
+          window.setTimeout(function () {
+            updateWikiAutocomplete(editor);
+          }, 0);
+        });
+
+        editor.on('remove', function () {
+          hideWikiAutocomplete();
+        });
+      }
+
+      document.addEventListener('click', function (event) {
+        if (!wikiAcDropdown.contains(event.target)) {
+          hideWikiAutocomplete();
+        }
+      });
+
+      /* =====================================================
+         TinyMCE — 문단 편집
       ===================================================== */
 
       function initSectionEditor() {
@@ -1242,63 +1612,7 @@
             }
           `,
           setup: function (editor) {
-            editor.ui.registry.addAutocompleter('acupediaWikiLink', {
-              trigger: '[[',
-              minChars: 0,
-              columns: 1,
-              fetch: function (pattern) {
-                return new Promise(function (resolve) {
-                  const results = searchResources(pattern);
-
-                  const wikiItems = results.filter(function (item) {
-                    return item.type === 'wiki';
-                  });
-                  const archiveItems = results.filter(function (item) {
-                    return item.type === 'archive';
-                  });
-
-                  const mapped = [];
-
-                  wikiItems.forEach(function (item) {
-                    mapped.push({
-                      type: 'autocompleteitem',
-                      value:
-                        item.type + '::' + item.id + '::' + item.title,
-                      text: '[위키] ' + item.title,
-                      meta: item.subtitle,
-                    });
-                  });
-
-                  archiveItems.forEach(function (item) {
-                    mapped.push({
-                      type: 'autocompleteitem',
-                      value:
-                        item.type + '::' + item.id + '::' + item.title,
-                      text: '[학술자료고] ' + item.title,
-                      meta: item.subtitle,
-                    });
-                  });
-
-                  resolve(mapped);
-                });
-              },
-              onAction: function (autocompleteApi, rng, value) {
-                const parts = String(value).split('::');
-                const type = parts[0];
-                const id = parts[1];
-                const title = parts.slice(2).join('::');
-
-                editor.selection.setRng(rng);
-                editor.insertContent(
-                  buildLinkHtml({
-                    id: id,
-                    title: title,
-                    type: type,
-                  }) + '&nbsp;',
-                );
-                autocompleteApi.hide();
-              },
-            });
+            setupWikiLinkAutocomplete(editor);
 
             editor.on('init', function () {
               sectionEditorReady = true;
@@ -1315,6 +1629,7 @@
         }
 
         editingSectionId = sectionId;
+        hideWikiAutocomplete();
 
         const numbered = withNumbers(article.sections).find(
           (s) => s.id === sectionId,
@@ -1347,6 +1662,7 @@
       }
 
       function closeSectionEditor() {
+        hideWikiAutocomplete();
         document.getElementById('editOverlay').classList.remove('open');
         editingSectionId = null;
       }
@@ -1364,7 +1680,7 @@
           return;
         }
 
-        section.html = ed.getContent();
+        section.html = convertWikiLinks(ed.getContent());
         closeSectionEditor();
         renderArticle();
 
