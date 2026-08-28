@@ -579,14 +579,20 @@
       }
 
       .wiki-ac-item {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1px;
         width: 100%;
-        padding: 10px 12px;
+        min-height: 44px;
+        padding: 6px 12px;
         border: none;
         border-bottom: 1px solid #eef0f2;
         background: white;
         text-align: left;
         cursor: pointer;
+        font-family: inherit;
+        line-height: 1.2;
       }
 
       .wiki-ac-item:last-child {
@@ -600,16 +606,21 @@
 
       .wiki-ac-item-title {
         display: block;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 600;
+        line-height: 1.2;
         color: #1f2937;
       }
 
       .wiki-ac-item-meta {
         display: block;
-        margin-top: 2px;
-        font-size: 12px;
+        margin: 0;
+        font-size: 11px;
+        line-height: 1.25;
         color: #6b7280;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .wiki-ac-item-meta.wiki {
