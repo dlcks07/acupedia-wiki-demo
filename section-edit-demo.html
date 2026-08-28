@@ -122,6 +122,110 @@
         font-size: 14px;
       }
 
+      .dummy-guide {
+        margin: 18px 0 22px;
+        padding: 18px 20px;
+        background: white;
+        border: 1px solid #e2e6ea;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      }
+
+      .dummy-guide h2 {
+        margin: 0 0 10px;
+        font-size: 16px;
+        letter-spacing: -0.3px;
+      }
+
+      .dummy-guide > p {
+        margin: 0 0 14px;
+        color: #5d6873;
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .dummy-columns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 14px;
+      }
+
+      .dummy-box {
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid #e2e6ea;
+      }
+
+      .dummy-box.wiki {
+        background: #f7fbf9;
+        border-color: #c8e6d4;
+      }
+
+      .dummy-box.archive {
+        background: #fff7ed;
+        border-color: #fed7aa;
+      }
+
+      .dummy-box h3 {
+        margin: 0 0 8px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .dummy-box.wiki h3 {
+        color: #276749;
+      }
+
+      .dummy-box.archive h3 {
+        color: #9a3412;
+      }
+
+      .dummy-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .dummy-tag {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        background: white;
+        border: 1px solid #d1d5db;
+        color: #374151;
+      }
+
+      .dummy-box.wiki .dummy-tag {
+        border-color: #b8ddcb;
+        color: #276749;
+      }
+
+      .dummy-box.archive .dummy-tag {
+        border-color: #fdba74;
+        color: #9a3412;
+      }
+
+      .dummy-steps {
+        margin: 0;
+        padding: 12px 14px 12px 30px;
+        background: #f8fafc;
+        border-radius: 8px;
+        border: 1px dashed #cfd6dd;
+        color: #5d6873;
+        font-size: 13px;
+        line-height: 1.75;
+      }
+
+      .dummy-steps code {
+        padding: 1px 5px;
+        border-radius: 4px;
+        background: #eef2f7;
+        font-size: 12px;
+      }
+
       .concept-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -526,6 +630,10 @@
           grid-template-columns: 1fr;
         }
 
+        .dummy-columns {
+          grid-template-columns: 1fr;
+        }
+
         .article-panel {
           padding: 22px 18px 32px;
         }
@@ -559,6 +667,62 @@
           생성합니다. 아래는 교수님께 흐름을 보여드리기 위한 테스트 화면입니다.
         </p>
       </div>
+
+      <section class="dummy-guide">
+        <h2>[[ ]] 위키링크 테스트용 더미 항목</h2>
+        <p>
+          이 페이지에는 실제 Acupedia DB가 연결되어 있지 않고, 아래 항목만
+          자동완성 검색 결과로 제공됩니다. 위키와 학술자료고에 같은 이름이
+          있는 경우(예: 합곡, 경근) 자동완성에서 구분되어 표시됩니다.
+        </p>
+
+        <div class="dummy-columns">
+          <div class="dummy-box wiki">
+            <h3>위키 더미 항목</h3>
+            <div class="dummy-tags">
+              <span class="dummy-tag">합곡</span>
+              <span class="dummy-tag">태충</span>
+              <span class="dummy-tag">족삼리</span>
+              <span class="dummy-tag">경근</span>
+              <span class="dummy-tag">경혈</span>
+            </div>
+          </div>
+
+          <div class="dummy-box archive">
+            <h3>학술자료고 더미 항목</h3>
+            <div class="dummy-tags">
+              <span class="dummy-tag">합곡</span>
+              <span class="dummy-tag">내관</span>
+              <span class="dummy-tag">수삼리</span>
+              <span class="dummy-tag">풍지</span>
+              <span class="dummy-tag">경근</span>
+              <span class="dummy-tag">경락</span>
+              <span class="dummy-tag">팔맥교회혈</span>
+            </div>
+          </div>
+        </div>
+
+        <ol class="dummy-steps">
+          <li>아래 본문에서 원하는 문단 옆 <strong>[편집]</strong>을 누릅니다.</li>
+          <li>
+            편집창에 <code>[[</code>를 입력한 뒤 글자를 이어 씁니다. (예:
+            <code>[[합</code>, <code>[[경</code>, <code>[[팔</code>)
+          </li>
+          <li>
+            자동완성 목록에서 <code>[위키]</code> 또는
+            <code>[학술자료고]</code>로 구분된 항목을 선택합니다.
+          </li>
+          <li>
+            선택하면 <code>[[문서명]]</code>이 아니라
+            <code>data-wiki-id</code> / <code>data-archive-id</code>가 붙은
+            내부 링크 HTML이 삽입됩니다.
+          </li>
+          <li>
+            <strong>이 문단 저장</strong>을 누르면 해당 문단에만 링크가
+            반영됩니다.
+          </li>
+        </ol>
+      </section>
 
       <div class="concept-grid">
         <div class="concept-card">
@@ -625,8 +789,8 @@
               </li>
               <li>
                 편집기에서
-                <code>[[수</code>, <code>[[중</code>,
-                <code>[[침</code> 입력 → 위키 / 학술자료고 구분 자동완성
+                <code>[[합</code>, <code>[[경</code>,
+                <code>[[팔</code> 입력 → 위키 / 학술자료고 구분 자동완성
               </li>
               <li>
                 저장 시
@@ -660,9 +824,10 @@
         <div class="modal-body">
           <div class="edit-tip">
             <strong>위키링크 테스트:</strong>
-            <code>[[</code>를 입력한 뒤 글자를 치면 자동완성이 열립니다. 초록
-            배지 = 위키, 주황 배지 = 학술자료고입니다. 항목을 선택하면 내부
-            링크 HTML이 삽입됩니다.
+            <code>[[</code>를 입력한 뒤 글자를 치면 자동완성이 열립니다.
+            <code>[위키]</code> = 위키 더미(합곡·태충·족삼리·경근·경혈),
+            <code>[학술자료고]</code> = 학술자료고 더미(합곡·내관·수삼리·풍지·경근·경락·팔맥교회혈).
+            항목을 선택하면 내부 링크 HTML이 삽입됩니다.
           </div>
           <textarea id="sectionEditor"></textarea>
         </div>
@@ -685,42 +850,6 @@
 
       const SEARCH_ITEMS = [
         {
-          id: 101,
-          title: '중풍',
-          type: 'wiki',
-          subtitle: '질환형 위키',
-        },
-        {
-          id: 152,
-          title: '수궐음심포경',
-          type: 'wiki',
-          subtitle: '경맥형 위키',
-        },
-        {
-          id: 153,
-          title: '수소음심경',
-          type: 'wiki',
-          subtitle: '경맥형 위키',
-        },
-        {
-          id: 154,
-          title: '수태음폐경',
-          type: 'wiki',
-          subtitle: '경맥형 위키',
-        },
-        {
-          id: 155,
-          title: '수태양소장경',
-          type: 'wiki',
-          subtitle: '경맥형 위키',
-        },
-        {
-          id: 156,
-          title: '수양명대장경',
-          type: 'wiki',
-          subtitle: '경맥형 위키',
-        },
-        {
           id: 210,
           title: '합곡',
           type: 'wiki',
@@ -728,57 +857,69 @@
         },
         {
           id: 211,
-          title: '족삼리',
+          title: '태충',
           type: 'wiki',
           subtitle: '개별 경혈형 위키',
         },
         {
           id: 212,
-          title: '백회',
+          title: '족삼리',
           type: 'wiki',
           subtitle: '개별 경혈형 위키',
         },
         {
           id: 301,
-          title: '기경팔맥',
+          title: '경근',
           type: 'wiki',
           subtitle: '경락 이론형 위키',
         },
         {
-          id: 401,
-          title: '사관혈',
+          id: 302,
+          title: '경혈',
           type: 'wiki',
-          subtitle: '배혈·처방형 위키',
+          subtitle: '경락·경혈 이론형 위키',
         },
         {
           id: 901,
-          title: '중풍의 침구치료 체계적 고찰',
+          title: '합곡',
           type: 'archive',
-          subtitle: '학술자료고 · 리뷰',
+          subtitle: '학술자료고 · 경혈 연구',
         },
         {
           id: 902,
-          title: '중풍 후유증에 대한 전침 임상연구',
+          title: '내관',
           type: 'archive',
-          subtitle: '학술자료고 · 임상연구',
+          subtitle: '학술자료고 · 경혈 연구',
         },
         {
           id: 903,
-          title: '침치료와 뇌졸중 재활의 상관성',
+          title: '수삼리',
           type: 'archive',
-          subtitle: '학술자료고 · 논문',
+          subtitle: '학술자료고 · 경혈 연구',
         },
         {
           id: 904,
-          title: '수궐음심포경 유주에 관한 문헌 비교',
+          title: '풍지',
           type: 'archive',
-          subtitle: '학술자료고 · 문헌연구',
+          subtitle: '학술자료고 · 경혈 연구',
         },
         {
           id: 905,
-          title: '합곡·태충 배혈의 임상 적용',
+          title: '경근',
           type: 'archive',
-          subtitle: '학술자료고 · 임상',
+          subtitle: '학술자료고 · 경락 이론',
+        },
+        {
+          id: 906,
+          title: '경락',
+          type: 'archive',
+          subtitle: '학술자료고 · 경락 이론',
+        },
+        {
+          id: 907,
+          title: '팔맥교회혈',
+          type: 'archive',
+          subtitle: '학술자료고 · 배혈·처방',
         },
       ];
 
@@ -862,13 +1003,6 @@
                 침구 치료에서는 병기와 병기에 따라
                 <a
                   class="wiki-link"
-                  href="/wikiDetail/212"
-                  data-source="wiki"
-                  data-wiki-id="212"
-                  >백회</a
-                >,
-                <a
-                  class="wiki-link"
                   href="/wikiDetail/210"
                   data-source="wiki"
                   data-wiki-id="210"
@@ -879,21 +1013,30 @@
                   href="/wikiDetail/211"
                   data-source="wiki"
                   data-wiki-id="211"
+                  >태충</a
+                >,
+                <a
+                  class="wiki-link"
+                  href="/wikiDetail/212"
+                  data-source="wiki"
+                  data-wiki-id="212"
                   >족삼리</a
                 >
                 등이 자주 활용된다. 관련 연구로는
                 <a
                   class="wiki-link"
-                  href="/archiveDetail/901"
+                  href="/archiveDetail/907"
                   data-source="archive"
-                  data-archive-id="901"
-                  >중풍의 침구치료 체계적 고찰</a
+                  data-archive-id="907"
+                  >팔맥교회혈</a
                 >을 참고할 수 있다.
               </p>
               <p>
                 편집 데모에서는 여기에
-                <code>[[수궐음심포경]]</code> 또는
-                <code>[[중풍의 침구]]</code>처럼 입력해 링크를 추가해 보세요.
+                <code>[[경근]]</code> 또는
+                <code>[[팔맥교회혈]]</code>처럼 입력해 링크를 추가해 보세요.
+                같은 이름이 위키·학술자료고에 모두 있을 때는 자동완성에서
+                구분됩니다. (예: <code>[[합</code> → [위키] 합곡 / [학술자료고] 합곡)
               </p>
             `,
           },
